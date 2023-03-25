@@ -1,0 +1,180 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# Compiled output
+IdServer/dist
+IdServer/tmp
+IdServer/out-tsc
+IdServer/bazel-out
+
+# Node
+IdServer/node_modules
+IdServer/npm-debug.log
+IdServer/yarn-error.log
+
+# IDEs and editors
+IdServer/.idea/
+IdServer/.project
+IdServer/.classpath
+IdServer/.c9/
+IdServer/*.launch
+IdServer/.settings/
+IdServer/*.sublime-workspace
+
+# Visual Studio Code
+IdServer/.vscode/*
+!IdServer/.vscode/settings.json
+!IdServer/.vscode/tasks.json
+!IdServer/.vscode/launch.json
+!IdServer/.vscode/extensions.json
+IdServer/.history/*
+
+# Miscellaneous
+IdServer/.angular/cache
+IdServer/.sass-cache/
+IdServer/connect.lock
+IdServer/coverage
+IdServer/libpeerconnection.log
+IdServer/testem.log
+IdServer/typings
+
+# System files
+IdServer/.DS_Store
+IdServer/Thumbs.db
+
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# Compiled output
+IdServer/IdServer/ClientApp/dist
+IdServer/tmp
+IdServer/out-tsc
+IdServer/bazel-out
+
+# Node
+IdServer/node_modules
+IdServer/npm-debug.log
+IdServer/yarn-error.log
+
+# IDEs and editors
+IdServer/.idea/
+IdServer/.project
+IdServer/.classpath
+IdServer/.c9/
+IdServer/*.launch
+IdServer/.settings/
+IdServer/*.sublime-workspace
+
+# Visual Studio Code
+IdServer/.vscode/*
+!IdServer/.vscode/settings.json
+!IdServer/.vscode/tasks.json
+!IdServer/.vscode/launch.json
+!IdServer/.vscode/extensions.json
+IdServer/.history/*
+
+# Miscellaneous
+IdServer/.angular/cache
+IdServer/.sass-cache/
+IdServer/connect.lock
+IdServer/coverage
+IdServer/libpeerconnection.log
+IdServer/testem.log
+IdServer/typings
+
+# System files
+IdServer/.DS_Store
+IdServer/Thumbs.db
+
+
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# Compiled output
+ClickAndEatApi/dist
+ClickAndEatApi/tmp
+ClickAndEatApi/out-tsc
+ClickAndEatApi/bazel-out
+
+# Node
+ClickAndEatApi/node_modules
+ClickAndEatApi/npm-debug.log
+ClickAndEatApi/yarn-error.log
+
+# IDEs and editors
+ClickAndEatApi/.idea/
+ClickAndEatApi/.project
+ClickAndEatApi/.classpath
+ClickAndEatApi/.c9/
+ClickAndEatApi/*.launch
+ClickAndEatApi/.settings/
+ClickAndEatApi/*.sublime-workspace
+
+# Visual Studio Code
+ClickAndEatApi/.vscode/*
+!ClickAndEatApi/.vscode/settings.json
+!ClickAndEatApi/.vscode/tasks.json
+!ClickAndEatApi/.vscode/launch.json
+!ClickAndEatApi/.vscode/extensions.json
+ClickAndEatApi/.history/*
+
+# Miscellaneous
+ClickAndEatApi/.angular/cache
+ClickAndEatApi/.sass-cache/
+ClickAndEatApi/connect.lock
+ClickAndEatApi/coverage
+ClickAndEatApi/libpeerconnection.log
+ClickAndEatApi/testem.log
+ClickAndEatApi/typings
+
+# System files
+ClickAndEatApi/.DS_Store
+ClickAndEatApi/Thumbs.db
+
+
+
+
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# Compiled output
+ClickAndEatWeb/dist
+ClickAndEatWeb/tmp
+ClickAndEatWeb/out-tsc
+ClickAndEatWeb/bazel-out
+
+# Node
+ClickAndEatWeb/node_modules
+ClickAndEatWeb/npm-debug.log
+ClickAndEatWeb/yarn-error.log
+
+# IDEs and editors
+ClickAndEatWeb/.idea/
+ClickAndEatWeb/.project
+ClickAndEatWeb/.classpath
+ClickAndEatWeb/.c9/
+ClickAndEatWeb/*.launch
+ClickAndEatWeb/.settings/
+ClickAndEatWeb/*.sublime-workspace
+
+# Visual Studio Code
+ClickAndEatWeb/.vscode/*
+!ClickAndEatWeb/.vscode/settings.json
+!ClickAndEatWeb/.vscode/tasks.json
+!ClickAndEatWeb/.vscode/launch.json
+!ClickAndEatWeb/.vscode/extensions.json
+ClickAndEatWeb/.history/*
+
+# Miscellaneous
+ClickAndEatWeb/.angular/cache
+ClickAndEatWeb/.sass-cache/
+ClickAndEatWeb/connect.lock
+ClickAndEatWeb/coverage
+ClickAndEatWeb/libpeerconnection.log
+ClickAndEatWeb/testem.log
+ClickAndEatWeb/typings
+
+# System files
+ClickAndEatWeb/.DS_Store
+ClickAndEatWeb/Thumbs.db
+
+
+ClickAndEatWeb/localhost.key
+ClickAndEatWeb/localhost.crt
+ClickAndEatWeb/certificate.cnf

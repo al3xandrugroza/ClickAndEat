@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+
+    identity_db:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        restart: always
+        environment:
+            - MSSQL_SA_PASSWORD
+            - ACCEPT_EULA=Y
+        ports:
+            - "1401:1433"
+            
+    click_and_eat_db:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        restart: always
+        environment:
+            - MSSQL_SA_PASSWORD
+            - ACCEPT_EULA=Y
+        ports:
+            - "1402:1433"
