@@ -192,7 +192,7 @@ namespace ClickAndEatApi.Db.Migrations
                 column: "UserEntityId",
                 principalTable: "UserEntity",
                 principalColumn: "Identifier",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_ShoppingCartEntities_OrganizationEntities_OrganizationEntityId",
@@ -208,7 +208,7 @@ namespace ClickAndEatApi.Db.Migrations
                 column: "UserEntityId",
                 principalTable: "UserEntity",
                 principalColumn: "Identifier",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

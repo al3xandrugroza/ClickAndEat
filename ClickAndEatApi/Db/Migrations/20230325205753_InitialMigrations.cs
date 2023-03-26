@@ -116,13 +116,13 @@ namespace ClickAndEatApi.Db.Migrations
                         column: x => x.FoodTypeEntitiesIdentifier,
                         principalTable: "FoodTypeEntities",
                         principalColumn: "Identifier",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_FoodTypeEntityMenuEntity_MenuEntities_MenuEntitiesIdentifier",
                         column: x => x.MenuEntitiesIdentifier,
                         principalTable: "MenuEntities",
                         principalColumn: "Identifier",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -140,7 +140,7 @@ namespace ClickAndEatApi.Db.Migrations
                         column: x => x.FoodTypeEntitiesIdentifier,
                         principalTable: "FoodTypeEntities",
                         principalColumn: "Identifier",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_FoodTypeEntityOrderEntity_OrderEntities_OrderEntitiesIdentifier",
                         column: x => x.OrderEntitiesIdentifier,
@@ -164,7 +164,7 @@ namespace ClickAndEatApi.Db.Migrations
                         column: x => x.FoodTypeEntitiesIdentifier,
                         principalTable: "FoodTypeEntities",
                         principalColumn: "Identifier",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_FoodTypeEntityShoppingCartEntity_ShoppingCartEntities_ShoppingCartEntitiesIdentifier",
                         column: x => x.ShoppingCartEntitiesIdentifier,
