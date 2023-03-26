@@ -24,7 +24,7 @@ namespace ClickAndEatApi.Db.Migrations
                 name: "FoodTypeEntities",
                 columns: table => new
                 {
-                    Identifier = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Identifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OrganizationEntityIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
@@ -45,7 +45,7 @@ namespace ClickAndEatApi.Db.Migrations
                 name: "MenuEntities",
                 columns: table => new
                 {
-                    Identifier = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Identifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrganizationEntityIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -65,7 +65,7 @@ namespace ClickAndEatApi.Db.Migrations
                 name: "OrderEntities",
                 columns: table => new
                 {
-                    Identifier = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Identifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrganizationEntityIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -85,7 +85,7 @@ namespace ClickAndEatApi.Db.Migrations
                 name: "ShoppingCartEntities",
                 columns: table => new
                 {
-                    Identifier = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Identifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrganizationEntityIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>

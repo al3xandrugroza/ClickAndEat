@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ClickAndEatApi.Db.Models;
+﻿namespace ClickAndEatApi.Db.Models;
 
 public class UserEntity : BaseEntity
 {
