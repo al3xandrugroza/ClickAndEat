@@ -2,6 +2,7 @@
 using Duende.IdentityServer.EntityFramework.Mappers;
 using Duende.IdentityServer.Models;
 using IdServer.Db.Models;
+using IdServer.Db.RepositoryServices.OrganizationRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,10 +18,10 @@ public static class IdentityServerStartupHelper
         optionsBuilder.UseSqlServer(connectionString ?? throw new InvalidOperationException(), b => b.MigrationsAssembly(CurrentAssemblyName));
     }
     
-    public static async Task AppSeed(RoleManager<IdentityRole> roleManager, UserManager<AppUser> userManager, ConfigurationDbContext configurationDbContext)
+    public static async Task AppSeed(IOrganizationRepository organizationRepository, RoleManager<IdentityRole> roleManager, UserManager<AppUser> userManager, ConfigurationDbContext configurationDbContext)
     {
         await roleManager.SeedRoles();
-        await userManager.SeedUsers();
+        await userManager.SeedUsers(organizationRepository);
         await configurationDbContext.SeedClients();
         await configurationDbContext.SeedIdentityResources();
     }
@@ -56,14 +57,15 @@ public static class IdentityServerStartupHelper
         }
     }
 
-    private static async Task SeedUsers(this UserManager<AppUser> userManager)
+    private static async Task SeedUsers(this UserManager<AppUser> userManager, IOrganizationRepository organizationRepository)
     {
+        var organizationEntity = await organizationRepository.CreateOrganization(CancellationToken.None);
         // development seed | al3xTODO: del user seed (optional)
-        await userManager.SeedUser("admin@outlook.com", RoleType.Admin);
-        await userManager.SeedUser("emp@outlook.com", RoleType.Emp);
+        await userManager.SeedUser("admin@outlook.com", RoleType.Admin, organizationEntity);
+        await userManager.SeedUser("emp@outlook.com", RoleType.Emp, organizationEntity);
     }
 
-    private static async Task SeedUser(this UserManager<AppUser> userManager, string email, string roleName)
+    private static async Task SeedUser(this UserManager<AppUser> userManager, string email, string roleName, OrganizationEntity organizationEntity)
     {
         var password = "y0urStrong(!)Password";
         if (await userManager.FindByEmailAsync(email) == null)
@@ -71,7 +73,8 @@ public static class IdentityServerStartupHelper
             var user = new AppUser
             {
                 UserName = email,
-                Email = email
+                Email = email,
+                OrganizationEntity = organizationEntity
             };
             var result = await userManager.CreateAsync(user, password);
             if (!result.Succeeded)

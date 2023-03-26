@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdServer.Db.Migrations.Identity
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230325203257_AddOrganizations")]
-    partial class AddOrganizations
+    [Migration("20230326172205_InitialIdentityMigration")]
+    partial class InitialIdentityMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
