@@ -1,6 +1,6 @@
 ﻿using IdServer.Db.Models;
 
-namespace IdServer.Db.RepositoryServices;
+namespace IdServer.Db.RepositoryServices.OrganizationRepository;
 
 public interface IOrganizationRepository
 {
