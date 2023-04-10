@@ -11,7 +11,11 @@ import {filter} from "rxjs";
 })
 export class AppComponent {
   constructor(private router: Router, private oauthService: OAuthService) {
-    if (sessionStorage.getItem(AuthConsts.AlreadyConfigured) === AuthConsts.Code) {
+    if (sessionStorage.getItem(AuthConsts.AlreadyConfigured) === AuthConsts.ShouldRetry) {
+      this.loginCode();
+    }
+
+    if (sessionStorage.getItem(AuthConsts.AlreadyConfigured) === AuthConsts.AlreadyFetched) {
       this.configureCodeFlow();
     }
 
@@ -24,6 +28,16 @@ export class AppComponent {
         const scopes = this.oauthService.getGrantedScopes();
         console.debug('scopes', scopes);
       });
+  }
+
+  async loginCode() {
+    this.oauthService.configure(authCodeFlowConfig);
+    await this.oauthService.loadDiscoveryDocument();
+    sessionStorage.setItem(AuthConsts.AlreadyConfigured, AuthConsts.AlreadyFetched);
+
+    this.oauthService.initLoginFlow();
+
+    this.oauthService.setupAutomaticSilentRefresh();
   }
 
   private configureCodeFlow() {

@@ -1,6 +1,7 @@
 using Duende.IdentityServer.EntityFramework.DbContexts;
 using IdServer.Db;
 using IdServer.Db.Models;
+using IdServer.Db.RepositoryServices.InvitationRepository;
 using IdServer.Db.RepositoryServices.OrganizationRepository;
 using IdServer.Utils;
 using Microsoft.AspNetCore.Identity;
@@ -13,6 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+
+builder.Services.AddScoped<IInvitationRepository, InvitationRepository>();
 
 builder.Services.AddCors(options =>
 {

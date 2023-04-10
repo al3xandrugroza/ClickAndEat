@@ -2,7 +2,9 @@ import {AuthConfig} from "angular-oauth2-oidc";
 
 export enum AuthConsts {
   AlreadyConfigured = "already_configured",
-  Code = 'code'
+  ShouldRetry = "should_retry",
+  AlreadyFetched = "already_fetched",
+  Revoked = "revoked"
 }
 
 export const authCodeFlowConfig: AuthConfig = {
