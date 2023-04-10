@@ -1,7 +1,8 @@
-using Duende.IdentityServer;
 using Duende.IdentityServer.EntityFramework.DbContexts;
 using IdServer.Db;
 using IdServer.Db.Models;
+using IdServer.Db.RepositoryServices.InvitationRepository;
+using IdServer.Db.RepositoryServices.OrganizationRepository;
 using IdServer.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,10 @@ const string allowLocalhostOrigins = "_allowLocalhostOrigin";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+
+builder.Services.AddScoped<IInvitationRepository, InvitationRepository>();
 
 builder.Services.AddCors(options =>
 {
@@ -62,19 +67,6 @@ builder.Services.AddIdentityServer(options =>
     })
     .AddJwtBearerClientAuthentication();
 
-    // builder.Services.AddAuthentication()
-    //     .AddOpenIdConnect("Google", "Sign-in with Google", options =>
-    //     {
-    //         options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-    //         options.ForwardSignOut = IdentityServerConstants.DefaultCookieAuthenticationScheme;
-    //
-    //         options.Authority = "https://accounts.google.com/";
-    //         options.ClientId = "708778530804-rhu8gc4kged3he14tbmonhmhe7a43hlp.apps.googleusercontent.com";
-    //
-    //         options.CallbackPath = "/signin-google";
-    //         options.Scope.Add("email");
-    //     });
-
 var app = builder.Build();
 
 // app.UseHsts();
@@ -106,8 +98,9 @@ using (var scope = app.Services.CreateScope())
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
     var configurationDbContext = scope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+    var organizationRepository = scope.ServiceProvider.GetRequiredService<IOrganizationRepository>();
     
-    await IdentityServerStartupHelper.AppSeed(roleManager, userManager, configurationDbContext);
+    await IdentityServerStartupHelper.AppSeed(organizationRepository, roleManager, userManager, configurationDbContext);
 }
 
 app.Run();

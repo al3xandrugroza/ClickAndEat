@@ -1,7 +1,8 @@
 ﻿using System.Net;
 using Duende.IdentityServer.Services;
 using IdServer.Db.Models;
-using IdServer.Db.RepositoryServices;
+using IdServer.Db.RepositoryServices.InvitationRepository;
+using IdServer.Db.RepositoryServices.OrganizationRepository;
 using IdServer.Dtos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ namespace IdServer.Controllers;
 [Route("[controller]")]
 public class ConnectController : ControllerBase
 {
+    private readonly ILogger<ConnectController> _logger;
     private readonly IIdentityServerInteractionService _interactionService;
     private readonly SignInManager<AppUser> _signInManager;
     private readonly IOrganizationRepository _organizationRepository;
@@ -23,24 +25,28 @@ public class ConnectController : ControllerBase
         SignInManager<AppUser> signInManager,
         IOrganizationRepository organizationRepository,
         IInvitationRepository invitationRepository,
-        UserManager<AppUser> userManager)
+        UserManager<AppUser> userManager,
+        ILogger<ConnectController> logger)
     {
         _interactionService = interactionService;
         _signInManager = signInManager;
         _organizationRepository = organizationRepository;
         _invitationRepository = invitationRepository;
         _userManager = userManager;
+        _logger = logger;  // TODO add logs
     }
 
     [HttpGet("login")]
     public void Login([FromQuery] string returnUrl)
     {
+        // TODO this endpoint should be available only without auth
         Response.Redirect($"https://localhost:44484/identity/login?returnUrl={returnUrl}");
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequestDto loginDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> Login([FromBody] LoginRequestDto loginDto)
     {
+        // TODO this endpoint should be available only without auth
         var returnUrl = "https://localhost:4200/";
         
         if (!ModelState.IsValid)
@@ -56,6 +62,7 @@ public class ConnectController : ControllerBase
     [HttpGet("logout")]
     public async Task<IActionResult> Logout([FromQuery] string logoutId, CancellationToken cancellationToken)
     {
+        // TODO this endpoint should be available only for the respective auth user
         var logoutRequest = await _interactionService.GetLogoutContextAsync(logoutId);
     
         if (logoutRequest == null || (logoutRequest.ShowSignoutPrompt && User.Identity?.IsAuthenticated == true))
@@ -71,6 +78,7 @@ public class ConnectController : ControllerBase
     [HttpPost("logout")]
     public async Task<IActionResult> PostLogout([FromQuery] string logoutId, CancellationToken cancellationToken)
     {
+        // TODO this endpoint should be available only for the respective auth user
         await _interactionService.GetLogoutContextAsync(logoutId);
 
         await _signInManager.SignOutAsync();
@@ -78,10 +86,11 @@ public class ConnectController : ControllerBase
         return Ok();
     }
     
-    [HttpPost("register/{invitation_code}/invitation/{org_identifier}/organization")]
-    public async Task RegisterWithInvitation([FromBody] RegisterRequestDto registerRequestDto, [FromQuery] Guid invitation_code, [FromQuery] Guid org_identifier, CancellationToken cancellationToken)
+    [HttpPost("register/{invitationCode}/invitation/{orgIdentifier}/organization")]
+    public async Task RegisterWithInvitation([FromBody] RegisterRequestDto registerRequestDto, [FromQuery] Guid invitationCode, [FromQuery] Guid orgIdentifier, CancellationToken cancellationToken)
     {
-        var invitationEntity = await _invitationRepository.GetByIdentifier(invitation_code, cancellationToken);
+        // TODO this endpoint should be available without auth
+        var invitationEntity = await _invitationRepository.GetByIdentifier(invitationCode, cancellationToken);
         if (invitationEntity is null)
         {
             // this user was not invited
@@ -89,7 +98,7 @@ public class ConnectController : ControllerBase
             return;
         }
 
-        var organizationEntity = await _organizationRepository.GetByIdentifier(org_identifier, cancellationToken);
+        var organizationEntity = await _organizationRepository.GetByIdentifier(orgIdentifier, cancellationToken);
         
         var user = new AppUser
         {
@@ -104,6 +113,7 @@ public class ConnectController : ControllerBase
     [HttpPost("register")]
     public async Task CreateOrganizationAndRegister([FromBody] RegisterRequestDto registerRequestDto, CancellationToken cancellationToken)
     {
+        // TODO this endpoint should be available without auth
         var organizationEntity = await _organizationRepository.CreateOrganization(cancellationToken);
         
         var user = new AppUser
@@ -113,6 +123,6 @@ public class ConnectController : ControllerBase
             OrganizationEntity = organizationEntity
         };
         
-        var result = await _userManager.CreateAsync(user, registerRequestDto.Password);
+        await _userManager.CreateAsync(user, registerRequestDto.Password);
     }
 }

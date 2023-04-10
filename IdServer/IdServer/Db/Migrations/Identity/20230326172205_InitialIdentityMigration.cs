@@ -1,6 +1,7 @@
-﻿#nullable disable
-
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
 
 namespace IdServer.Db.Migrations.Identity
 {
@@ -23,28 +24,14 @@ namespace IdServer.Db.Migrations.Identity
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
+                name: "OrganizationEntities",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                    Identifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.PrimaryKey("PK_OrganizationEntities", x => x.Identifier);
                 });
 
             migrationBuilder.CreateTable(
@@ -65,6 +52,57 @@ namespace IdServer.Db.Migrations.Identity
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    OrganizationEntityIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_OrganizationEntities_OrganizationEntityIdentifier",
+                        column: x => x.OrganizationEntityIdentifier,
+                        principalTable: "OrganizationEntities",
+                        principalColumn: "Identifier",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InvitationEntities",
+                columns: table => new
+                {
+                    Identifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrganizationEntityIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InvitationEntities", x => x.Identifier);
+                    table.ForeignKey(
+                        name: "FK_InvitationEntities_OrganizationEntities_OrganizationEntityIdentifier",
+                        column: x => x.OrganizationEntityIdentifier,
+                        principalTable: "OrganizationEntities",
+                        principalColumn: "Identifier",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -186,11 +224,21 @@ namespace IdServer.Db.Migrations.Identity
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_OrganizationEntityIdentifier",
+                table: "AspNetUsers",
+                column: "OrganizationEntityIdentifier");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InvitationEntities_OrganizationEntityIdentifier",
+                table: "InvitationEntities",
+                column: "OrganizationEntityIdentifier");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -211,10 +259,16 @@ namespace IdServer.Db.Migrations.Identity
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "InvitationEntities");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "OrganizationEntities");
         }
     }
 }

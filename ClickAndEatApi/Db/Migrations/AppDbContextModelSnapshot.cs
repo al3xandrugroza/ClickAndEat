@@ -28,7 +28,15 @@ namespace ClickAndEatApi.Db.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("OrganizationEntityIdentifier")
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageLink")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OrganizationEntityId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Type")
@@ -37,7 +45,7 @@ namespace ClickAndEatApi.Db.Migrations
 
                     b.HasKey("Identifier");
 
-                    b.HasIndex("OrganizationEntityIdentifier");
+                    b.HasIndex("OrganizationEntityId");
 
                     b.ToTable("FoodTypeEntities");
                 });
@@ -48,12 +56,20 @@ namespace ClickAndEatApi.Db.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("OrganizationEntityIdentifier")
+                    b.Property<string>("OrderLockState")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OrganizationEntityId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ShoppingLimit")
+                        .HasColumnType("int");
 
                     b.HasKey("Identifier");
 
-                    b.HasIndex("OrganizationEntityIdentifier");
+                    b.HasIndex("OrganizationEntityId")
+                        .IsUnique();
 
                     b.ToTable("MenuEntities");
                 });
@@ -64,12 +80,22 @@ namespace ClickAndEatApi.Db.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("OrganizationEntityIdentifier")
+                    b.Property<string>("OrderDeliverState")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OrganizationEntityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserEntityId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Identifier");
 
-                    b.HasIndex("OrganizationEntityIdentifier");
+                    b.HasIndex("OrganizationEntityId");
+
+                    b.HasIndex("UserEntityId")
+                        .IsUnique();
 
                     b.ToTable("OrderEntities");
                 });
@@ -91,14 +117,36 @@ namespace ClickAndEatApi.Db.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("OrganizationEntityIdentifier")
+                    b.Property<Guid>("OrganizationEntityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserEntityId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Identifier");
 
-                    b.HasIndex("OrganizationEntityIdentifier");
+                    b.HasIndex("OrganizationEntityId");
+
+                    b.HasIndex("UserEntityId")
+                        .IsUnique();
 
                     b.ToTable("ShoppingCartEntities");
+                });
+
+            modelBuilder.Entity("ClickAndEatApi.Db.Models.UserEntity", b =>
+                {
+                    b.Property<Guid>("Identifier")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrganizationEntityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Identifier");
+
+                    b.HasIndex("OrganizationEntityId");
+
+                    b.ToTable("UserEntity");
                 });
 
             modelBuilder.Entity("FoodTypeEntityMenuEntity", b =>
@@ -150,7 +198,7 @@ namespace ClickAndEatApi.Db.Migrations
                 {
                     b.HasOne("ClickAndEatApi.Db.Models.OrganizationEntity", "OrganizationEntity")
                         .WithMany()
-                        .HasForeignKey("OrganizationEntityIdentifier")
+                        .HasForeignKey("OrganizationEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -161,7 +209,7 @@ namespace ClickAndEatApi.Db.Migrations
                 {
                     b.HasOne("ClickAndEatApi.Db.Models.OrganizationEntity", "OrganizationEntity")
                         .WithMany()
-                        .HasForeignKey("OrganizationEntityIdentifier")
+                        .HasForeignKey("OrganizationEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -172,18 +220,45 @@ namespace ClickAndEatApi.Db.Migrations
                 {
                     b.HasOne("ClickAndEatApi.Db.Models.OrganizationEntity", "OrganizationEntity")
                         .WithMany()
-                        .HasForeignKey("OrganizationEntityIdentifier")
+                        .HasForeignKey("OrganizationEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ClickAndEatApi.Db.Models.UserEntity", "UserEntity")
+                        .WithOne("OrderEntity")
+                        .HasForeignKey("ClickAndEatApi.Db.Models.OrderEntity", "UserEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("OrganizationEntity");
+
+                    b.Navigation("UserEntity");
                 });
 
             modelBuilder.Entity("ClickAndEatApi.Db.Models.ShoppingCartEntity", b =>
                 {
                     b.HasOne("ClickAndEatApi.Db.Models.OrganizationEntity", "OrganizationEntity")
                         .WithMany()
-                        .HasForeignKey("OrganizationEntityIdentifier")
+                        .HasForeignKey("OrganizationEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ClickAndEatApi.Db.Models.UserEntity", "UserEntity")
+                        .WithOne("ShoppingCartEntity")
+                        .HasForeignKey("ClickAndEatApi.Db.Models.ShoppingCartEntity", "UserEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrganizationEntity");
+
+                    b.Navigation("UserEntity");
+                });
+
+            modelBuilder.Entity("ClickAndEatApi.Db.Models.UserEntity", b =>
+                {
+                    b.HasOne("ClickAndEatApi.Db.Models.OrganizationEntity", "OrganizationEntity")
+                        .WithMany()
+                        .HasForeignKey("OrganizationEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -232,6 +307,15 @@ namespace ClickAndEatApi.Db.Migrations
                         .WithMany()
                         .HasForeignKey("ShoppingCartEntitiesIdentifier")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ClickAndEatApi.Db.Models.UserEntity", b =>
+                {
+                    b.Navigation("OrderEntity")
+                        .IsRequired();
+
+                    b.Navigation("ShoppingCartEntity")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

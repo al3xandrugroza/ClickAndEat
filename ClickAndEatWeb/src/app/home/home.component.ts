@@ -47,15 +47,19 @@ export class HomeComponent {
   async loginCode() {
     this.oauthService.configure(authCodeFlowConfig);
     await this.oauthService.loadDiscoveryDocument();
-    sessionStorage.setItem(AuthConsts.AlreadyConfigured, AuthConsts.Code);
+    sessionStorage.setItem(AuthConsts.AlreadyConfigured, AuthConsts.ShouldRetry);
 
     this.oauthService.initLoginFlow();
 
     this.oauthService.setupAutomaticSilentRefresh();
   }
 
+
+
   logout() {
     this.oauthService.revokeTokenAndLogout();
     this.oauthService.logOut();
+    sessionStorage.setItem(AuthConsts.AlreadyConfigured, AuthConsts.Revoked);
+
   }
 }

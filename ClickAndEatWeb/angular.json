@@ -68,8 +68,7 @@
               "browserTarget": "ClickAndEatWeb:build:production"
             },
             "development": {
-              "browserTarget": "ClickAndEatWeb:build:development",
-              "proxyConfig": "proxy.conf.js"
+              "browserTarget": "ClickAndEatWeb:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -101,5 +100,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "90a78609-bc08-438a-8d07-91dcd0483256"
   }
 }

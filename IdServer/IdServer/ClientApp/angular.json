@@ -129,5 +129,8 @@
       }
     }
   },
-  "defaultProject": "IdServer"
+  "defaultProject": "IdServer",
+  "cli": {
+    "analytics": "8a22f106-470d-4308-9d0f-e57fab32d5a2"
+  }
 }
