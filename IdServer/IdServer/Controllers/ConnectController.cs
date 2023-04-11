@@ -60,19 +60,19 @@ public class ConnectController : ControllerBase
     }
 
     [HttpGet("logout")]
-    public async Task<IActionResult> Logout([FromQuery] string logoutId, CancellationToken cancellationToken)
+    public async Task Logout([FromQuery] string logoutId, CancellationToken cancellationToken)
     {
         // TODO this endpoint should be available only for the respective auth user
         var logoutRequest = await _interactionService.GetLogoutContextAsync(logoutId);
     
-        if (logoutRequest == null || (logoutRequest.ShowSignoutPrompt && User.Identity?.IsAuthenticated == true))
+        if (logoutRequest == null)
         {
-            return Ok(new { prompt = User.Identity?.IsAuthenticated ?? false });
+            return;
         }
     
         await _signInManager.SignOutAsync();
 
-        return Ok();
+        Response.Redirect("https://localhost:4200");
     }
 
     [HttpPost("logout")]
