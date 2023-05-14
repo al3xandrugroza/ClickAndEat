@@ -1,0 +1,29 @@
+<ng-container *ngIf="!ordersListIsEmpty">
+  <table mat-table [dataSource]="allOrders" class="mat-elevation-z8 demo-table">
+    <ng-container matColumnDef="Email">
+      <th mat-header-cell *matHeaderCellDef>Email</th>
+      <td mat-cell *matCellDef="let element">{{element.Email}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="FoodTypes">
+      <th mat-header-cell *matHeaderCellDef>FoodTypes</th>
+      <td mat-cell *matCellDef="let element">{{element.FoodTypes}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns;"
+    ></tr>
+  </table>
+</ng-container>
+
+
+<ng-container *ngIf="ordersListIsEmpty">
+  <p class="title">There are no placed orders in the organization.</p>
+</ng-container>
+
+
+<div class="horizontal-center submit-button">
+  <button mat-raised-button color="warn" (click)="deleteAllOrders()" [disabled]="menuIsUnlocked">Delete All Orders and Clear All Carts</button>
+</div>

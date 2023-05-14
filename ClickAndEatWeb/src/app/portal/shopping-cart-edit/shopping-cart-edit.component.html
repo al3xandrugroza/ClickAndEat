@@ -1,0 +1,12 @@
+<app-food-type *ngFor="let foodType of menu.ChoiceList"
+               [ngClass]="{'horizontal-center': true, 'selected': isSelected(foodType)}"
+               [hideButtons]="true"
+               [identifier]="foodType.Identifier"
+               [type]="foodType.Type"
+               [description]="foodType.Description"
+               [imageLink]="foodType.ImageLink"
+               (click)="toggleFromCartItemsList(foodType)"></app-food-type>
+
+<div class="horizontal-center submit-button">
+  <button mat-raised-button color="primary" (click)="updateShoppingCart()" [disabled]="orderAlreadyExists || menuLocked">Update Shopping Cart</button>
+</div>

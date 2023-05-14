@@ -1,0 +1,18 @@
+<mat-card class="card">
+  <mat-card-header>
+    <mat-card-title-group>
+      <mat-card-title>{{ type }}</mat-card-title>
+      <mat-card-subtitle *ngIf="deletedFoodType" class="deleted-mark">DELETED FOOD TYPE</mat-card-subtitle>
+      <img mat-card-xl-image src="{{ imageLink }}" >
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <mat-card-content>
+    {{ description }}
+  </mat-card-content>
+
+  <div class="button" [hidden]="hideButtons">
+    <button mat-raised-button (click)="editFoodType()" [disabled]="deletedFoodType || menuIsUnlocked">Edit</button>
+    <button mat-raised-button color="warn" (click)="deleteFoodType()" [disabled]="deletedFoodType || menuIsUnlocked">Delete</button>
+  </div>
+</mat-card>

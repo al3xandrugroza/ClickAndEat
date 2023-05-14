@@ -1,0 +1,6 @@
+<app-food-type *ngFor="let foodType of foodTypes"
+               class="horizontal-center"
+               [identifier]="foodType.Identifier"
+               [type]="foodType.Type"
+               [description]="foodType.Description"
+               [imageLink]="foodType.ImageLink"></app-food-type>

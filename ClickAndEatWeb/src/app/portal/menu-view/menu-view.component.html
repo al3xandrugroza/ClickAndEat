@@ -1,0 +1,7 @@
+<app-food-type *ngFor="let foodType of menu.ChoiceList"
+               [ngClass]="{'horizontal-center': true}"
+               [hideButtons]="true"
+               [identifier]="foodType.Identifier"
+               [type]="foodType.Type"
+               [description]="foodType.Description"
+               [imageLink]="foodType.ImageLink"></app-food-type>

@@ -105,6 +105,10 @@ namespace IdServer.Db.Migrations.Identity
                     b.Property<Guid>("OrganizationEntityIdentifier")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Identifier");
 
                     b.HasIndex("OrganizationEntityIdentifier");
@@ -117,6 +121,10 @@ namespace IdServer.Db.Migrations.Identity
                     b.Property<Guid>("Identifier")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Identifier");
 

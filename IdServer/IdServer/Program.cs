@@ -1,9 +1,15 @@
+using AutoMapper;
+using Duende.IdentityServer;
 using Duende.IdentityServer.EntityFramework.DbContexts;
+using IdServer.Auth.Handlers;
+using IdServer.Auth.Requirements;
 using IdServer.Db;
 using IdServer.Db.Models;
 using IdServer.Db.RepositoryServices.InvitationRepository;
 using IdServer.Db.RepositoryServices.OrganizationRepository;
+using IdServer.Services;
 using IdServer.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,17 +34,13 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.Services.AddControllersWithViews();
-// builder.Services.AddControllers();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
+builder.Services.AddControllers();
 
 var connectionString = Environment.GetEnvironmentVariable(EnvironmentVariables.IdentityServerDbConnectionString);
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddIdentity<AppUser, IdentityRole>()
-    .AddClaimsPrincipalFactory<AppUserClaimsPrincipalFactory>()
     .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddIdentityServer(options =>
@@ -65,31 +67,35 @@ builder.Services.AddIdentityServer(options =>
     {
         options.ResolveDbContextOptions = IdentityServerStartupHelper.ResolveDbContextOptions;
     })
-    .AddJwtBearerClientAuthentication();
+    .AddJwtBearerClientAuthentication()
+    .AddProfileService<ProfileService>();
+
+builder.Services.AddAuthentication().AddLocalApi();
+
+builder.Services.AddScoped<IAuthorizationHandler, AdminHandler>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(IdentityServerConstants.LocalApi.PolicyName, policy =>
+    {
+        policy.AddAuthenticationSchemes(IdentityServerConstants.LocalApi.AuthenticationScheme);
+        policy.RequireAuthenticatedUser();
+
+        policy.Requirements.Add(new AdminRequirement());
+    });
+});
 
 var app = builder.Build();
 
-// app.UseHsts();
-// app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseRouting();
 app.UseIdentityServer();
-// app.UseCors(allowLocalhostOrigins);
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
 
-// app.MapControllers();
+app.MapControllers();
 
-app.MapFallbackToFile("index.html");
 
 using (var scope = app.Services.CreateScope())
 {
-    // Wait for db docker containers to start
-    Thread.Sleep(1 * 1000);
-    
     var services = scope.ServiceProvider;
     await services.GetRequiredService<AppDbContext>().Database.MigrateAsync();
     await services.GetRequiredService<ConfigurationDbContext>().Database.MigrateAsync();

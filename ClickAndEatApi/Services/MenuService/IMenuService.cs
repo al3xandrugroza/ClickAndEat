@@ -4,13 +4,11 @@ namespace ClickAndEatApi.Services.MenuService;
 
 public interface IMenuService
 {
-    Task<MenuDto?> GetMenu();
-    Task<MenuDto> CreateMenu();
-    
-    // Should ignore food types that are not available on the associated org
-    Task<MenuDto> UpdateMenu(MenuUpdateRequestDto menuUpdateRequestDto);
-    
-    Task LockMenu();
-    
-    Task UnlockMenu();
+    Task<MenuDto?> GetMenu(CancellationToken cancellationToken);
+    Task<MenuDto> CreateMenu(CancellationToken cancellationToken);
+    Task<MenuDto> UpdateMenu(MenuUpdateRequestDto menuUpdateRequestDto, CancellationToken cancellationToken);
+    Task LockMenu(CancellationToken cancellationToken);
+    Task UnlockMenu(CancellationToken cancellationToken);
+    Task ThrowWhenUnlocked(CancellationToken cancellationToken);
+    Task ThrowWhenLocked(CancellationToken cancellationToken);
 }

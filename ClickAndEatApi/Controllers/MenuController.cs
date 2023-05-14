@@ -1,5 +1,7 @@
-﻿using ClickAndEatApi.Dtos;
+﻿using ClickAndEatApi.Auth;
+using ClickAndEatApi.Dtos;
 using ClickAndEatApi.Services.MenuService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClickAndEatApi.Controllers;
@@ -9,35 +11,37 @@ namespace ClickAndEatApi.Controllers;
 public class MenuController : ControllerBase
 {
     private readonly IMenuService _menuService;
-    
-    public MenuController(IMenuService menuService)
+
+    public MenuController(IMenuService menuService, ILogger<MenuController> logger)
     {
         _menuService = menuService;
     }
 
     [HttpGet]
-    public async Task<MenuDto> GetMenu()
+    [Authorize]
+    public async Task<MenuDto> GetMenu(CancellationToken cancellationToken)
     {
-        return await _menuService.GetMenu() ?? await _menuService.CreateMenu();
+        return await _menuService.GetMenu(cancellationToken) ?? await _menuService.CreateMenu(cancellationToken);
     }
 
     [HttpPut]
-    public async Task<MenuDto> UpdateMenu([FromBody] MenuUpdateRequestDto menuUpdateRequestDto)
+    [Authorize(Policy = Policies.Admin)]
+    public async Task<MenuDto> UpdateMenu([FromBody] MenuUpdateRequestDto menuUpdateRequestDto, CancellationToken cancellationToken)
     {
-        return await _menuService.UpdateMenu(menuUpdateRequestDto);
+        return await _menuService.UpdateMenu(menuUpdateRequestDto, cancellationToken);
     }
 
     [HttpPost("lock")]
-    public async Task LockMenu()
+    [Authorize(Policy = Policies.Admin)]
+    public async Task LockMenu(CancellationToken cancellationToken)
     {
-        // Should block all shopping cart / orders operations
-        // Make a policy to enforce these one
-        await _menuService.LockMenu();
+        await _menuService.LockMenu(cancellationToken);
     }
-    
+
     [HttpPost("unlock")]
-    public async Task UnlockMenu()
+    [Authorize(Policy = Policies.Admin)]
+    public async Task UnlockMenu(CancellationToken cancellationToken)
     {
-        await _menuService.UnlockMenu();
+        await _menuService.UnlockMenu(cancellationToken);
     }
 }

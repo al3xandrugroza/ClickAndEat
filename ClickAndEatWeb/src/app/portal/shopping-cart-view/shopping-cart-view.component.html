@@ -1,0 +1,16 @@
+<app-food-type *ngFor="let foodType of shoppingCart.CartItems"
+               [ngClass]="{'horizontal-center': true}"
+               [hideButtons]="true"
+               [identifier]="foodType.Identifier"
+               [type]="foodType.Type"
+               [description]="foodType.Description"
+               [imageLink]="foodType.ImageLink"></app-food-type>
+
+
+<div class="horizontal-center submit-button">
+  <button mat-raised-button color="primary" (click)="placeOrder()" [disabled]="orderAlreadyExists || menuLocked" [hidden]="emptyCart">Place Order</button>
+</div>
+
+<ng-container *ngIf="emptyCart">
+  <p class="title"> Your shopping cart is empty. Go to edit section in order to add items.</p>
+</ng-container>

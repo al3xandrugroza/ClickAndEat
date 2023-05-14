@@ -4,6 +4,7 @@ using IdServer.Db.Models;
 using IdServer.Db.RepositoryServices.InvitationRepository;
 using IdServer.Db.RepositoryServices.OrganizationRepository;
 using IdServer.Dtos;
+using IdServer.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +14,6 @@ namespace IdServer.Controllers;
 [Route("[controller]")]
 public class ConnectController : ControllerBase
 {
-    private readonly ILogger<ConnectController> _logger;
     private readonly IIdentityServerInteractionService _interactionService;
     private readonly SignInManager<AppUser> _signInManager;
     private readonly IOrganizationRepository _organizationRepository;
@@ -25,29 +25,25 @@ public class ConnectController : ControllerBase
         SignInManager<AppUser> signInManager,
         IOrganizationRepository organizationRepository,
         IInvitationRepository invitationRepository,
-        UserManager<AppUser> userManager,
-        ILogger<ConnectController> logger)
+        UserManager<AppUser> userManager)
     {
         _interactionService = interactionService;
         _signInManager = signInManager;
         _organizationRepository = organizationRepository;
         _invitationRepository = invitationRepository;
         _userManager = userManager;
-        _logger = logger;  // TODO add logs
     }
 
     [HttpGet("login")]
     public void Login([FromQuery] string returnUrl)
     {
-        // TODO this endpoint should be available only without auth
-        Response.Redirect($"https://localhost:44484/identity/login?returnUrl={returnUrl}");
+        Response.Redirect($"https://localhost:44484/login");
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto loginDto)
     {
-        // TODO this endpoint should be available only without auth
-        var returnUrl = "https://localhost:4200/";
+        var returnUrl = "https://localhost:4200/dashboard";
         
         if (!ModelState.IsValid)
         {
@@ -62,7 +58,6 @@ public class ConnectController : ControllerBase
     [HttpGet("logout")]
     public async Task Logout([FromQuery] string logoutId, CancellationToken cancellationToken)
     {
-        // TODO this endpoint should be available only for the respective auth user
         var logoutRequest = await _interactionService.GetLogoutContextAsync(logoutId);
     
         if (logoutRequest == null)
@@ -75,54 +70,50 @@ public class ConnectController : ControllerBase
         Response.Redirect("https://localhost:4200");
     }
 
-    [HttpPost("logout")]
-    public async Task<IActionResult> PostLogout([FromQuery] string logoutId, CancellationToken cancellationToken)
+    [HttpPost("register/invitation/{invitationCode:guid}")]
+    public async Task RegisterWithInvitation([FromBody] RegisterByInvitationDto registerByInvitationDto, Guid invitationCode, CancellationToken cancellationToken)
     {
-        // TODO this endpoint should be available only for the respective auth user
-        await _interactionService.GetLogoutContextAsync(logoutId);
-
-        await _signInManager.SignOutAsync();
-
-        return Ok();
-    }
-    
-    [HttpPost("register/{invitationCode}/invitation/{orgIdentifier}/organization")]
-    public async Task RegisterWithInvitation([FromBody] RegisterRequestDto registerRequestDto, [FromQuery] Guid invitationCode, [FromQuery] Guid orgIdentifier, CancellationToken cancellationToken)
-    {
-        // TODO this endpoint should be available without auth
         var invitationEntity = await _invitationRepository.GetByIdentifier(invitationCode, cancellationToken);
-        if (invitationEntity is null)
+        var organizationEntity = await _organizationRepository.GetByIdentifier(invitationEntity.OrganizationId, cancellationToken);
+
+        var user = new AppUser
         {
-            // this user was not invited
-            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            UserName = invitationEntity.Email,
+            Email = invitationEntity.Email,
+            OrganizationEntity = organizationEntity
+        };
+
+        var result = await _userManager.CreateAsync(user, registerByInvitationDto.Password);
+        if (!result.Succeeded) throw new Exception();
+
+        result = await _userManager.AddToRoleAsync(user, invitationEntity.Role);
+        if (!result.Succeeded) throw new Exception();
+
+        await _invitationRepository.DeleteAllInvitationForEmailInAllOrganizations(invitationEntity.Email, cancellationToken);
+    }
+
+    [HttpPost("register")]
+    public async Task CreateOrganizationAndRegister([FromBody] RegisterOrgRequestDto registerOrgRequestDto, CancellationToken cancellationToken)
+    {
+        if (await _userManager.FindByEmailAsync(registerOrgRequestDto.Email) is not null)
+        {
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.Conflict;
             return;
         }
 
-        var organizationEntity = await _organizationRepository.GetByIdentifier(orgIdentifier, cancellationToken);
-        
+        var organizationEntity = await _organizationRepository.CreateOrganization(registerOrgRequestDto.OrganizationName, cancellationToken);
+
         var user = new AppUser
         {
-            UserName = registerRequestDto.Email,
-            Email = registerRequestDto.Email,
+            UserName = registerOrgRequestDto.Email,
+            Email = registerOrgRequestDto.Email,
             OrganizationEntity = organizationEntity
         };
-        
-        var result = await _userManager.CreateAsync(user, registerRequestDto.Password);
-    }
-    
-    [HttpPost("register")]
-    public async Task CreateOrganizationAndRegister([FromBody] RegisterRequestDto registerRequestDto, CancellationToken cancellationToken)
-    {
-        // TODO this endpoint should be available without auth
-        var organizationEntity = await _organizationRepository.CreateOrganization(cancellationToken);
-        
-        var user = new AppUser
-        {
-            UserName = registerRequestDto.Email,
-            Email = registerRequestDto.Email,
-            OrganizationEntity = organizationEntity
-        };
-        
-        await _userManager.CreateAsync(user, registerRequestDto.Password);
+
+        var result = await _userManager.CreateAsync(user, registerOrgRequestDto.Password);
+        if (!result.Succeeded) throw new Exception("Error on user creation");
+
+        result = await _userManager.AddToRoleAsync(user, RoleType.Admin);
+        if (!result.Succeeded) throw new Exception("Error on user role assignment");
     }
 }

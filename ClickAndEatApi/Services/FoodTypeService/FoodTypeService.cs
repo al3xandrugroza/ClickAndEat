@@ -1,31 +1,44 @@
-﻿using ClickAndEatApi.Dtos;
+﻿using ClickAndEatApi.Db.RepositoryServices.FoodTypeRepository;
+using ClickAndEatApi.Dtos;
+using ClickAndEatApi.Services.MenuService;
 
 namespace ClickAndEatApi.Services.FoodTypeService;
 
 public class FoodTypeService : IFoodTypeService
 {
-    public Task<IEnumerable<FoodTypeDto>> GetAllFoodTypes()
+    private readonly IFoodTypeRepository _foodTypeRepository;
+    private readonly IMenuService _menuService;
+
+    public FoodTypeService(IMenuService menuService, IFoodTypeRepository foodTypeRepository)
     {
-        throw new NotImplementedException();
+        _menuService = menuService;
+        _foodTypeRepository = foodTypeRepository;
     }
 
-    public Task<FoodTypeDto> GetFoodTypeByIdentifier(Guid identifier)
+    public async Task<IEnumerable<FoodTypeDto>> GetAllFoodTypes(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _foodTypeRepository.GetAllFoodTypes(cancellationToken);
     }
 
-    public Task<FoodTypeDto> CreateFoodType(FoodTypeCreateRequestDto foodTypeCreateRequestDto)
+    public async Task<FoodTypeDto> GetFoodTypeByIdentifier(Guid identifier, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _foodTypeRepository.GetFoodTypeByIdentifier(identifier, cancellationToken);
     }
 
-    public Task<FoodTypeDto> UpdateFoodType(FoodTypeUpdateRequestDto foodTypeUpdateRequestDto)
+    public async Task<FoodTypeDto> CreateFoodType(FoodTypeCreateRequestDto foodTypeCreateRequestDto, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _foodTypeRepository.CreateFoodType(foodTypeCreateRequestDto, cancellationToken);
     }
 
-    public Task DeleteFoodType(Guid identifier)
+    public async Task<FoodTypeDto> UpdateFoodType(FoodTypeUpdateRequestDto foodTypeUpdateRequestDto, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await _menuService.ThrowWhenUnlocked(cancellationToken);
+        return await _foodTypeRepository.UpdateFoodType(foodTypeUpdateRequestDto, cancellationToken);
+    }
+
+    public async Task DeleteFoodType(Guid identifier, CancellationToken cancellationToken)
+    {
+        await _menuService.ThrowWhenUnlocked(cancellationToken);
+        await _foodTypeRepository.DeleteFoodType(identifier, cancellationToken);
     }
 }
