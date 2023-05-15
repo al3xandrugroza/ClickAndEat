@@ -41,11 +41,14 @@ namespace ClickAndEatApi.Db.Migrations
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Identifier");
 
                     b.HasIndex("OrganizationEntityId");
+
+                    b.HasIndex("Type", "OrganizationEntityId")
+                        .IsUnique();
 
                     b.ToTable("FoodTypeEntities");
                 });
@@ -139,6 +142,10 @@ namespace ClickAndEatApi.Db.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("OrganizationEntityId")
                         .HasColumnType("uniqueidentifier");
 
@@ -146,7 +153,7 @@ namespace ClickAndEatApi.Db.Migrations
 
                     b.HasIndex("OrganizationEntityId");
 
-                    b.ToTable("UserEntity");
+                    b.ToTable("UserEntities");
                 });
 
             modelBuilder.Entity("FoodTypeEntityMenuEntity", b =>

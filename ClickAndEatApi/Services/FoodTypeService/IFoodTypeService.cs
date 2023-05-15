@@ -4,9 +4,9 @@ namespace ClickAndEatApi.Services.FoodTypeService;
 
 public interface IFoodTypeService
 {
-    Task<IEnumerable<FoodTypeDto>> GetAllFoodTypes();
-    Task<FoodTypeDto> GetFoodTypeByIdentifier(Guid identifier);
-    Task<FoodTypeDto> CreateFoodType(FoodTypeCreateRequestDto foodTypeCreateRequestDto);
-    Task<FoodTypeDto> UpdateFoodType(FoodTypeUpdateRequestDto foodTypeUpdateRequestDto);
-    Task DeleteFoodType(Guid identifier);
+    Task<IEnumerable<FoodTypeDto>> GetAllFoodTypes(CancellationToken cancellationToken);
+    Task<FoodTypeDto> GetFoodTypeByIdentifier(Guid identifier, CancellationToken cancellationToken);
+    Task<FoodTypeDto> CreateFoodType(FoodTypeCreateRequestDto foodTypeCreateRequestDto, CancellationToken cancellationToken);
+    Task<FoodTypeDto> UpdateFoodType(FoodTypeUpdateRequestDto foodTypeUpdateRequestDto, CancellationToken cancellationToken);
+    Task DeleteFoodType(Guid identifier, CancellationToken cancellationToken);
 }

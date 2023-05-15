@@ -1,0 +1,36 @@
+<h3 class="title">Add new food type</h3>
+
+<div class="horizontal-center">
+  <div class="form">
+    <mat-form-field appearance="fill">
+      <mat-label>Type</mat-label>
+      <input matInput [formControl]="type" [errorStateMatcher]="checker">
+
+      <mat-error *ngIf="type.hasError('required')">
+        Type is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Description</mat-label>
+      <input matInput [formControl]="description" [errorStateMatcher]="checker">
+
+      <mat-error *ngIf="description.hasError('required')">
+        Description is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Image Link</mat-label>
+      <input matInput [formControl]="imageLink" [errorStateMatcher]="checker">
+
+      <mat-error *ngIf="imageLink.hasError('required')">
+        Image link is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+  </div>
+</div>
+
+<div class="horizontal-center">
+  <button mat-raised-button color="primary" (click)="createFoodType()" [disabled]="submitIsDisabled">Add</button>
+</div>

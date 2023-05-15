@@ -59,7 +59,7 @@ public static class IdentityServerStartupHelper
 
     private static async Task SeedUsers(this UserManager<AppUser> userManager, IOrganizationRepository organizationRepository)
     {
-        var organizationEntity = await organizationRepository.CreateOrganization(CancellationToken.None);
+        var organizationEntity = await organizationRepository.CreateOrganization("MyOrganization", CancellationToken.None);
         // development seed | al3xTODO: del user seed (optional)
         await userManager.SeedUser("admin@outlook.com", RoleType.Admin, organizationEntity);
         await userManager.SeedUser("emp@outlook.com", RoleType.Emp, organizationEntity);

@@ -3,5 +3,20 @@
     "target": "https://localhost:7255",
     "secure": false,
     "changeOrigin": true
+  },
+  "/identity": {
+    "target": "https://localhost:7255",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/register": {
+    "target": "https://localhost:7255",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/api": {
+    "target": "https://localhost:7181",
+    "secure": false,
+    "changeOrigin": true
   }
 }

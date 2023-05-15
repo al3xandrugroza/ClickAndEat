@@ -1,0 +1,22 @@
+<mat-tab-group>
+  <mat-tab label="Menu">
+    <ng-template matTabContent>
+      <app-menu></app-menu>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="Food Types">
+    <ng-template matTabContent>
+      <app-food-type-list></app-food-type-list>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="Add New Food Type">
+    <ng-template matTabContent>
+      <app-food-type-create></app-food-type-create>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="Orders">
+    <ng-template matTabContent>
+      <app-order-list></app-order-list>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>

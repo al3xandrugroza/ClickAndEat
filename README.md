@@ -13,3 +13,15 @@ Development hist:
 	
 	local .env:
 		Data Source=127.0.0.1,1401;Database=master;Trusted_Connection=False;TrustServerCertificate=True;MultipleActiveResultSets=true;User Id=sa;Password=yourStrong(!)Password
+		
+		
+		
+		
+		
+		
+workaround:
+
+	https://localhost:7255/connect/register/invitation/E9ED8365-D544-4A6F-2C9C-08DB54A07344
+	{
+		"Password": "1!aA123"	
+	}

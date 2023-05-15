@@ -4,6 +4,7 @@ export enum AuthConsts {
   AlreadyConfigured = "already_configured",
   ShouldRetry = "should_retry",
   AlreadyFetched = "already_fetched",
+  TokenReceived = "token_received",
   Revoked = "revoked"
 }
 

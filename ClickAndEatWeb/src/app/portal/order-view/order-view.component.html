@@ -1,0 +1,20 @@
+<ng-container *ngIf="orderExists">
+  <app-food-type *ngFor="let foodType of orderedItems"
+                 [ngClass]="{'horizontal-center': true}"
+                 [hideButtons]="true"
+                 [identifier]="foodType.Identifier"
+                 [type]="foodType.Type"
+                 [description]="foodType.Description"
+                 [imageLink]="foodType.ImageLink"></app-food-type>
+
+
+  <div class="horizontal-center submit-button">
+    <button mat-raised-button color="warn" (click)="cancelOrder()" [disabled]="menuLocked">Cancel Order</button>
+  </div>
+</ng-container>
+
+
+
+<ng-container *ngIf="!orderExists">
+  <p class="title">No Order. Please go to shopping cart in order to place an order.</p>
+</ng-container>

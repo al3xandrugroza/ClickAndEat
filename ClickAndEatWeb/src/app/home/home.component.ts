@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {OAuthService} from "angular-oauth2-oidc";
 import {authCodeFlowConfig, AuthConsts} from "../auth/auth-consts";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-home',
@@ -8,40 +9,22 @@ import {authCodeFlowConfig, AuthConsts} from "../auth/auth-consts";
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
-  constructor(private oauthService: OAuthService) {}
+  constructor(private oauthService: OAuthService,
+              private router: Router) {}
 
-  get hasValidAccessToken() {
-    return this.oauthService.hasValidAccessToken();
+  isLoggedIn(): boolean {
+    const claims = this.oauthService.getIdentityClaims();
+
+    if (!claims) return false;
+    return true
   }
 
-  get hasValidIdToken() {
-    return this.oauthService.hasValidIdToken();
+  registerNewOrganization() {
+    this.router.navigate(['register/organization']);
   }
 
-  get idClaims() {
-    return this.oauthService.getIdentityClaims();
-  }
-
-  get givenName() {
-    var claims = this.oauthService.getIdentityClaims();
-    if (!claims) return null;
-    return claims['given_name'];
-  }
-
-  get id_token() {
-    return this.oauthService.getIdToken();
-  }
-
-  get access_token() {
-    return this.oauthService.getAccessToken();
-  }
-
-  get id_token_expiration() {
-    return this.oauthService.getIdTokenExpiration();
-  }
-
-  get access_token_expiration() {
-    return this.oauthService.getAccessTokenExpiration();
+  waitingForToken(): boolean {
+    return sessionStorage.getItem(AuthConsts.AlreadyConfigured) === AuthConsts.AlreadyFetched;
   }
 
   async loginCode() {
@@ -52,14 +35,5 @@ export class HomeComponent {
     this.oauthService.initLoginFlow();
 
     this.oauthService.setupAutomaticSilentRefresh();
-  }
-
-
-
-  logout() {
-    this.oauthService.revokeTokenAndLogout();
-    this.oauthService.logOut();
-    sessionStorage.setItem(AuthConsts.AlreadyConfigured, AuthConsts.Revoked);
-
   }
 }

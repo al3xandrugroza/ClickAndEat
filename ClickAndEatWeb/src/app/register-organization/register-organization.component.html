@@ -1,0 +1,58 @@
+<mat-progress-bar *ngIf="this.loading" mode="indeterminate"></mat-progress-bar>
+
+<ng-container *ngIf="!this.loading">
+  <ng-container *ngIf="shouldRegister()">
+    <h3 class="title">Register</h3>
+
+    <div class="horizontal-center">
+      <div class="form">
+        <mat-form-field appearance="fill">
+          <mat-label>Organization</mat-label>
+          <input matInput [formControl]="organizationName" [errorStateMatcher]="checker" [disabled]="true">
+
+          <mat-error *ngIf="organizationName.hasError('required')">
+            Organization Name is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+
+
+        <mat-form-field appearance="fill">
+          <mat-label>Email</mat-label>
+          <input matInput [formControl]="email" [errorStateMatcher]="checker" [disabled]="true">
+
+          <mat-error *ngIf="email.hasError('email') && !email.hasError('required')">
+            Please enter a valid email address
+          </mat-error>
+          <mat-error *ngIf="email.hasError('required')">
+            Email is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Password</mat-label>
+          <input matInput [formControl]="password" [errorStateMatcher]="checker" type="password">
+
+          <mat-error *ngIf="password.hasError('password') && !password.hasError('required')">
+            Password should contain an uppercase character, lowercase character, a digit,
+            a non-alphanumeric character and at least 6 characters long.
+          </mat-error>
+          <mat-error *ngIf="password.hasError('required')">
+            Password is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="horizontal-center">
+      <button mat-raised-button color="primary" (click)="register()" [disabled]="submitIsDisabled">Send</button>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="registeredSuccessfully()">
+    <h4 class="title">Registered successfully</h4>
+  </ng-container>
+
+  <ng-container *ngIf="invitationNotFound()">
+    <h4 class="title">Invitation is not available any more</h4>
+  </ng-container>
+</ng-container>

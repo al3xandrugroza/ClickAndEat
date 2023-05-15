@@ -12,7 +12,4 @@ public class LoginRequestDto
 
     [JsonPropertyName("IsPersistent")]
     public bool IsPersistent { get; set; } = false;
-    
-    [JsonPropertyName("ReturnUrl")]
-    public string ReturnUrl { get; set; }
 }

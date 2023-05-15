@@ -3,18 +3,10 @@
 namespace ClickAndEatApi.Services.OrderService;
 
 public interface IOrderService
-{ 
-    Task<OrderDto?> GetOrder();
-    
-    // Get all orders for users with non-Admin role
-    Task<IEnumerable<OrderDto>> GetAllOrders();
-    
-    // Should clear the cart
-    // Should notify the user by sending an email
-    Task<OrderDto> PlaceOrder();
-    
-    // Should notify the user by sending an email
-    Task CancelOrder();
-
-    Task DeleteAllOrders();
+{
+    Task<IEnumerable<AllOrdersDto>> GetAllOrders(CancellationToken cancellationToken);
+    Task<OrderDto?> GetOrder(CancellationToken cancellationToken);
+    Task<OrderDto> PlaceOrder(CancellationToken cancellationToken);
+    Task CancelOrder(CancellationToken cancellationToken);
+    Task DeleteAllOrders(CancellationToken cancellationToken);
 }

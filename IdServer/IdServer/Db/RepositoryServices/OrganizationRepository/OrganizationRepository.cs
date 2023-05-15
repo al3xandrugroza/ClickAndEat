@@ -1,4 +1,5 @@
 ﻿using IdServer.Db.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdServer.Db.RepositoryServices.OrganizationRepository;
 
@@ -11,10 +12,11 @@ public class OrganizationRepository : IOrganizationRepository
         _context = context;
     }
 
-    public async Task<OrganizationEntity> CreateOrganization(CancellationToken cancellationToken)
+    public async Task<OrganizationEntity> CreateOrganization(string name, CancellationToken cancellationToken)
     {
         var organization = new OrganizationEntity
         {
+            Name = name,
             Users = new List<AppUser>()
         };
 
@@ -26,6 +28,6 @@ public class OrganizationRepository : IOrganizationRepository
 
     public async Task<OrganizationEntity> GetByIdentifier(Guid key, CancellationToken cancellationToken)
     {
-        return _context.OrganizationEntities.Single(o => o.Identifier.Equals(key));
+        return await _context.OrganizationEntities.SingleOrDefaultAsync(o => o.Identifier.Equals(key), cancellationToken) ?? throw new Exception("not found");
     }
 }

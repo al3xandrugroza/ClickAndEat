@@ -1,3 +1,2 @@
-<p>portal works!</p>
-
-<router-outlet></router-outlet>
+<app-admin-portal *ngIf="isAdmin()"></app-admin-portal>
+<app-emp-portal *ngIf="isEmp()"></app-emp-portal>

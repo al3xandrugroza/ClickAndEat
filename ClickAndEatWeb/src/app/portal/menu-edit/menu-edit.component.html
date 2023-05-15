@@ -1,0 +1,14 @@
+<app-food-type *ngFor="let foodType of allFoodTypes"
+               [ngClass]="{'horizontal-center': true, 'selected': isSelected(foodType)}"
+               [hideButtons]="true"
+               [identifier]="foodType.Identifier"
+               [type]="foodType.Type"
+               [description]="foodType.Description"
+               [imageLink]="foodType.ImageLink"
+               (click)="toggleFromChoiceList(foodType)"></app-food-type>
+
+<div class="horizontal-center submit-button">
+  <button mat-raised-button color="primary" (click)="updateMenu()" [disabled]="isUnlocked()">Update Menu</button>
+  <button mat-raised-button (click)="lockMenu()" [hidden]="isLocked()">Lock Menu</button>
+  <button mat-raised-button (click)="unlockMenu()" [hidden]="isUnlocked()">Unlock Menu</button>
+</div>

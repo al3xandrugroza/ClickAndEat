@@ -1,57 +1,55 @@
-﻿using ClickAndEatApi.Dtos;
+﻿using ClickAndEatApi.Auth;
+using ClickAndEatApi.Dtos;
 using ClickAndEatApi.Services.OrderService;
 using ClickAndEatApi.Services.ShoppingCartService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClickAndEatApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class OrdersController : ControllerBase
+public class OrderController : ControllerBase
 {
     private readonly IOrderService _orderService;
-    private readonly IShoppingCartService _shoppingCartService;
-    
-    public OrdersController(IOrderService orderService,
-        IShoppingCartService shoppingCartService)
+
+    public OrderController(IOrderService orderService)
     {
         _orderService = orderService;
-        _shoppingCartService = shoppingCartService;
     }
 
     [HttpGet("all")]
-    public async Task<IEnumerable<OrderDto>> GetAllOrders()
+    [Authorize(Policy = Policies.Admin)]
+    public async Task<IEnumerable<AllOrdersDto>> GetAllOrders(CancellationToken cancellationToken)
     {
-        // For admins only
-        return await _orderService.GetAllOrders();
+        return await _orderService.GetAllOrders(cancellationToken);
     }
-    
+
     [HttpGet]
-    public async Task<OrderDto?> GetOrder()
+    [Authorize(Policy = Policies.Emp)]
+    public async Task<OrderDto?> GetOrder(CancellationToken cancellationToken)
     {
-        // For admins only
-        return await _orderService.GetOrder();
+        return await _orderService.GetOrder(cancellationToken);
     }
 
     [HttpPost]
-    public async Task<OrderDto> PlaceOrder()
+    [Authorize(Policy = Policies.Emp)]
+    public async Task<OrderDto> PlaceOrder(CancellationToken cancellationToken)
     {
-        return await _orderService.PlaceOrder();
+        return await _orderService.PlaceOrder(cancellationToken);
     }
 
     [HttpDelete]
-    public async Task CancelOrder()
+    [Authorize(Policy = Policies.Emp)]
+    public async Task CancelOrder(CancellationToken cancellationToken)
     {
-        await _orderService.CancelOrder();
+        await _orderService.CancelOrder(cancellationToken);
     }
-    
-    [HttpDelete("all")]
-    public async Task DeleteAllOrders()
-    {
-        // Should be performed only when menu is locked
-        // Make a policy to enforce this behaviour
-        await _orderService.DeleteAllOrders();
 
-        await _shoppingCartService.ClearAllShoppingCarts();
+    [HttpDelete("all")]
+    [Authorize(Policy = Policies.Admin)]
+    public async Task DeleteAllOrders(CancellationToken cancellationToken)
+    {
+        await _orderService.DeleteAllOrders(cancellationToken);
     }
 }
